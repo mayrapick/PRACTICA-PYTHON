@@ -174,3 +174,52 @@ a = [1,5,3,6,9,7]
 lista = mayor_lista(a)
 print(lista)
         
+#ejercicio 12:  convertir esta funcion en una recursiva:
+#multiplica los elementos de una lista
+def iterativa(l: list[int]) -> int:
+    c = 1
+    for i in l:
+        c = c * i
+    return c
+
+
+a = [1,5,3,6,9,7]
+
+h = iterativa(a)
+print(h)
+
+def recursiva(l: list[int]) -> int:
+    #caso base: #anda bien
+    if len(l) <= 1:
+        return l[0]
+    else:
+        return l[0] * recursiva(l[1:])
+        
+        
+
+b= [1,5,3,6,9,7]
+c = [1]
+r = recursiva(b)
+print(r)
+
+
+# Escriba una función recursiva para replicar los elementos de una lista una cantidad n de veces
+#ejemplo: replicar([1, 3, 3, 7], 2) -> ([1, 1, 3, 3, 3, 3, 7, 7])
+
+def replicar(l:list, n) -> list:
+    if len(l) < 1 or n < 1:
+        return l
+    else:
+        return l, replicar(l,n) #corregir
+    
+k= replicar(b,2)
+print(k)
+
+    
+
+
+
+
+
+
+
