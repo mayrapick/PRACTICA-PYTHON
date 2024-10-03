@@ -1,0 +1,494 @@
+#practica PPO ejercicios git lab PROG 2 2024
+import math 
+
+
+class Point:
+    """ representación de un punto en un plano cartesiano 2D """
+
+    def __init__(self, x: float, y: float) -> None:
+        self.x = x
+        self.y = y
+
+    def __str__(self) -> str:
+        return f" Point: x: {self.x} , y: {self.y}"
+
+    def __eq__(self, other) -> bool:
+
+        if not isinstance(other, Point):
+            return NotImplemented
+        return self.x == other.x and self.y == other.y
+
+    def __add__(self, other: 'Point') -> 'Point':
+        return Point(self.x + other.x, self.y + other.y)
+    
+
+    def distancia(self, other: 'Point') -> float:
+        d = math.sqrt((other.x - self.x)**2 + (other.y - self.y)**2)
+        return d
+
+
+p = Point(1,2)
+print(p)
+q = Point(3,4)
+print(q)
+d = p.distancia(q)
+print(d)
+
+
+
+class Rectangle:
+    def __init__(self, width: float, height: float, corner: Point) -> None:
+        self.width = width
+        self.height = height
+        self.corner = corner
+
+#definir métodos __str__ y __eq__ apropiados para Rectangle
+
+    def __str__(self) -> str:
+     return f" Rectangule: Width: {self.width}, Height: {self.height}, Corner: {self.corner}"
+
+
+    def __eq__(self, other: 'Rectangle') -> bool:
+
+        if not isinstance(other, Rectangle):
+            return NotImplemented
+        return self.width == other.width and self.height == other.height and self.corner == other.corner
+    
+    def mover_modificadora(self, dx, dy) -> None:
+        # realizan cambios en los objetos pasados a las mismas
+        self.corner.x = self.corner.x + dx
+        self.corner.y = self.corner.y + dy
+
+    def mover_pura (rect, dx, dy) -> 'Rectangle':
+        mover_x = rect.corner.x + dx
+        mover_y = rect.corner.y + dy
+        corner = Point(mover_x, mover_y)
+        a = Rectangle(rect.width, rect.height, corner)
+        return a    
+
+     
+punto = Point(2,2)
+a = Rectangle(2,3,punto)
+print(a)
+
+punta = Point(3,2)
+b = Rectangle(5,4,punta)
+print(b)
+#comparacion
+print(a == a)
+a.mover_modificadora(2,5)
+print(a)
+
+
+#EJERCICIO NRO 3
+class Automovil:
+    def __init__(self, patente: 'str', marca: 'str') -> None:
+        self.patente = patente
+        self.marca = marca
+        self.km_recorridos = 0
+        self.litros_nafta = 0
+
+        
+    def avanzar(self, kilometros: int):
+        consumo = kilometros * 0.088
+        if self.litros_nafta > consumo:
+            self.km_recorridos += kilometros
+            self.litros_nafta -= consumo
+        else:         
+            print("Es necesario cargar nafta para recorrer la cantidad indicada de kilómetros")
+
+
+    def cargar_nafta(self, cantidad: float) -> 'float':
+        self.litros_nafta += cantidad
+        return self.litros_nafta
+        
+
+    def __str__(self) -> str:
+        return f"El auto tiene patente {self.patente}, marca: {self.marca}, km_recorridos: {self.km_recorridos}, litros de nafta: {self.litros_nafta}"
+            
+
+a = Automovil("123", "fiat")
+print(a)
+a.cargar_nafta(100)
+print(a)
+a.avanzar(10)
+print(a)
+
+
+auto = Automovil("AEF-202", "Peugeot")
+auto.cargar_nafta(10)
+print(auto.km_recorridos)
+auto.avanzar(15)
+print(auto.km_recorridos)
+
+
+#ejercicio 4 #definir clase Robot que simule los movimientos de un robot y calcule la posicion en la que se encuentra en
+# cada momento , el robot se mueve por un tablero infinito de coordenadas  X e Y y realiza:
+# avanza hacia adelante (A)
+# retrocede (R)
+#avanza izquierda (I), o a la derecha (D)
+# el Robot tiene un metodo llamado mueve() que recibe la orden como parametro y otro
+# que se llama posicion_actual(), que indicará su posición en las coordenadas
+#X e Y. Al crear el robot, este se inicializará a las coordenadas (0, 0).
+
+
+class Robot:
+    def __init__(self) -> None:
+        self.x = 0
+        self.y = 0
+        self.historial = []
+
+
+    def mueve(self, posicion: str,  pasos: int)-> None:
+        if posicion == "A": #A: avanza hacia adelante
+            self.y += pasos
+
+        elif posicion == "R":  #R: retrocede
+            self.y -= pasos
+
+        elif posicion == "I":  #I: mueve a la izquierda
+            self.x += pasos
+
+        
+        elif posicion == "D": #mueve derecha
+                self.x -= pasos
+        else:
+            return "posicion invalida"
+            
+
+    def mueve_de_a_varios(self, orden, pasos):
+
+        movimentos_validos = {"A", "R", "I", "D"}
+
+        for movimiento in orden:
+            if movimiento not in movimentos_validos:
+                print("movimiento invalido")
+                return None
+        
+        for movimiento in orden:
+            self.mueve(movimiento, pasos)
+
+            self.historial.append(orden)  
+
+
+
+    def obtener_historico(self) -> list:
+        return self.historial
+
+    def posicion_actual(self)-> int:
+        return self.x , self.y
+
+    def __str__(self) -> str:
+        return f"posicion x: {self.x}, posicion y: {self.y}"
+    
+
+    
+
+yo_robot = Robot()
+print(yo_robot)
+yo_robot.mueve("I", 15)
+yo_robot.mueve("A", 10)
+yo_robot.mueve("R", 5)
+yo_robot.mueve("D", 2)
+yo_robot.posicion_actual()
+yo_robot.mueve_de_a_varios("AARRII", 3)
+print(yo_robot)
+yo_robot.obtener_historico()
+
+
+
+mi_robot = Robot()
+
+# Mover hacia adelante 2 pasos
+mi_robot.mueve("A", 2)
+print(mi_robot)  # Posición x: 0, Posición y: 2
+
+# Mover varios pasos: retrocede, avanza y mueve a la derecha
+mi_robot.mueve_de_a_varios("RAD", 3)
+print(mi_robot)  # Posición x: 3, Posición y: 2
+
+# Ver el historial de movimientos
+print(mi_robot.obtener_historico())  # [('A', 2), ('R', 3), ('A', 3), ('D', 3)]
+
+
+# EJERCICIO 5: ahora mover puede recibir un solo movimiento, o bien, una secuencia de
+#movimientos (por ejemplo, "RRAARDDI"). Atención: si la secuencia de
+#movimientos contiene algún movimiento inválido, debe informarlo antes de
+#realizar cualquier movimiento.
+
+# Agregar un método obtener_historico_de_movimientos que devuelva el historial de movimientos que realizó el robot.
+
+# Agregar un método como_volver que indique la secuencia de movimientos que 
+# deberíamos realizar para regresar a la coordenada (0, 0).
+
+#EJERCICIO 6: CREACION CLASES Materia y Carrera:
+#Cada materia tiene:
+#Un código de materia.
+#Un nombre de la materia.
+#Una cantidad de créditos que aporta.
+#Una carrera puede pensarse como una lista de materias.
+
+class Materia:
+    def __init__(self, codigo, nombre, creditos) -> None:
+        self.codigo = codigo
+        self.nombre = nombre
+        self.creditos = creditos
+        self.nota = None
+
+
+    def aprobar(self, nota):
+        self.nota = nota        
+    
+    def aprobada(self):
+        if self.nota >= 6:
+            return True
+        else:
+            return False
+        
+    def __str__(self) -> str:
+        return f"codigo: {self.codigo}, nombre: {self.nombre}, creditos: {self.creditos}, nota: {self.nota}, aprobar: {self.aprobar}, aprobada: {self.aprobada}"
+    
+
+
+class Carrera():
+    def __init__(self, materias: list['Materia']) -> None:
+        self.materias = materias
+        self.materias_aprobadas = []
+        self.promedio = 0
+
+    def materia_aprobada(self, codigo: 'str', nota: 'int'):
+        if nota >= 6:
+            for materia in self.materias:
+                if materia.codigo == codigo:
+                    materia.nota = nota            
+                    self.materias_aprobadas.append(materia)
+                    return self.materias_aprobadas
+                   
+            print("codigo incorrecto")
+        else:                
+            print("nota insuficiente para aprobar")
+    """         
+    def promedio(self) -> float:
+        if len(self.materias_aprobadas) == 0:
+            return 0.0
+        total = 0
+        total_materias = len(self.materias_aprobadas)
+        for materia in self.materias_aprobadas:
+            total += materia.nota
+
+        promedio = total / total_materias
+        return promedio
+    """
+
+    def promedio(self) -> float:
+        if not self.materias_aprobadas:  # Comprobar si la lista está vacía
+            return 0.0
+    
+        total = sum(materia.nota for materia in self.materias_aprobadas)  # Sumar todas las notas
+        return total / len(self.materias_aprobadas)  # Calcular y retornar el promedio
+
+
+    def __str__(self) -> str:
+        materias_aprobadas_str = ', '.join(f"{materia.codigo} {materia.nombre} ({materia.nota})" for materia in self.materias_aprobadas)
+        return f"materias aprobadas: {self.materias_aprobadas}, promedio: {self.promedio}"
+
+
+    
+    
+analisis2 = Materia("61.03", "Análisis 2", 8)
+fisica2 = Materia("62.01", "Física 2", 8)
+algo1 = Materia("75.40", "Algoritmos 1", 6)
+
+c = Carrera([analisis2, fisica2, algo1])
+print(c)
+c.materia_aprobada("95.14", 7)
+c.materia_aprobada("75.40", 10)
+print(c)
+#c.promedio()
+
+#CHAT GPT
+# Definición de las clases
+class Materia:
+    def __init__(self, codigo, nombre, creditos) -> None:
+        self.codigo = codigo
+        self.nombre = nombre
+        self.creditos = creditos
+        self.nota = 0
+
+class Carrera:
+    def __init__(self, materias: list[Materia]) -> None:
+        self.materias = materias
+        self.materias_aprobadas = []
+
+    def materia_aprobada(self, codigo: str, nota: int):
+        if nota >= 6:
+            for materia in self.materias:
+                if materia.codigo == codigo:
+                    materia.nota = nota
+                    self.materias_aprobadas.append(materia)
+                    return self.materias_aprobadas
+            print("Error: código incorrecto")
+        else:
+            print("Nota insuficiente para aprobar")
+
+    def promedio(self) -> float:
+        if not self.materias_aprobadas:
+            return 0.0
+        
+        total = sum(materia.nota for materia in self.materias_aprobadas)
+        return total / len(self.materias_aprobadas)
+
+    def __str__(self) -> str:
+        materias_aprobadas_str = ', '.join(f"{materia.codigo} {materia.nombre} ({materia.nota})" for materia in self.materias_aprobadas)
+        return f"Materias aprobadas: {materias_aprobadas_str if materias_aprobadas_str else 'Ninguna'} -- Promedio: {self.promedio():.2f}"
+
+# Ejemplo de uso
+analisis2 = Materia("61.03", "Análisis 2", 8)
+fisica2 = Materia("62.01", "Física 2", 8)
+algo1 = Materia("75.40", "Algoritmos 1", 6)
+
+carrera = Carrera([analisis2, fisica2, algo1])
+
+carrera.materia_aprobada("75.40", 10)  # Aprueba Algoritmos 1 con nota 10
+carrera.materia_aprobada("62.01", 7)   # Aprueba Física 2 con nota 7
+
+print(carrera)  # Esto imprimirá las materias aprobadas y el promedio
+
+
+#EJERCICIO 7 (LO CORREGI EN PAPEL)
+class Cosa:
+    def __init__(self, valor:int):
+        self.valor = valor
+
+
+class Coleccion:
+    def __init__(self):
+        self.coleccion = []
+    
+    def agregar_cosa(self,cosa: 'Cosa'):
+        self.coleccion.append(cosa)
+
+
+cosa = Cosa(1)
+coleccion = Coleccion()
+coleccion.agregar_cosa(cosa)
+
+#EJERCICIO 8 
+#definir una jerarquia de clases: animales -> mamiferos ->felinos | canidos | primates ->hacker |
+
+class Animales:
+    def __init__(self, patas: int) -> None:
+        self.patas = patas
+
+    def speak(self)->str:
+        return "soy un animal"
+    
+    def talk(self)-> None:
+        return self.speak()  #aca delego el metodo speak 
+    
+    def __str__(self) -> str:
+        return f'soy un animal y tengo {self.patas} patas'
+    
+
+class Mamiferos(Animales):
+    def __init__(self, patas: int) -> None:
+        super().__init__(patas)
+
+    def speak(self) ->str:
+        return "soy un mamifero"   
+    
+    def __str__(self) -> str:
+        return f'soy un mamifero y tengo {self.patas} patas'
+        
+
+class Canidos(Mamiferos):
+    def __init__(self, patas: int) -> None:
+        super().__init__(patas)
+
+    def speak(self)-> str:
+        return "soy un canido"
+    
+    def __str__(self) -> str:
+        def __str__(self) -> str:
+            return f'soy un canido y tengo {self.patas} patas'
+    
+
+class Primates(Mamiferos):
+    def __init__(self, patas: int) -> None:
+        super().__init__(patas)
+
+    def speak(self)->str:
+        return "soy un primate"
+    
+    def __str__(self) -> str:
+        return f'soy un primate y tengo {self.patas} patas'
+    
+class Hacker(Primates):
+    def __init__(self, patas: int) -> None:
+        super().__init__(patas)
+
+    def speak(self)-> str:
+        return "soy un hacker"
+    
+    def __str__(self) -> str:
+        return f'soy un hacker y tengo {self.patas} patas'
+
+    
+h = Hacker(2)
+print(h)
+hablar = h.speak()
+print(hablar)
+
+
+#EJERCICIO 9: COMPLETAR LA FUNCIONALIDAD DE LA CLASE JUGADOR:
+#GOLPEADO: QUITA VIDA A UN JUGADOR
+#GOLPEAR: QUITA VIDA AL ENEMIGO Y LO AGREGA A LA LISTA DE ENEMIGOS GOLPEADOS
+
+class Entidad:
+    def __init__(self, vida_inicial: int):
+        self.vida = vida_inicial
+
+    def __str__(self) -> str:
+        return f'vida inicial: {self.vida}'
+
+class Enemigo(Entidad):
+    pass       
+
+class Jugador(Entidad):
+    def __init__(self, vida_inicial: int):
+        super().__init__(vida_inicial)
+        self.enemigos_golpeados = []
+
+    def golpeado(self, cuanto):
+        self.vida -= cuanto
+        if self.vida == 0:
+            return "no tenes mas vidas, afuera del juego"
+        else:
+            return f'vida actual: {self.vida}'
+
+    def golpear(self, enemigo: 'Enemigo', cuanto: int)-> None:
+        enemigo.vida -= cuanto
+        if enemigo not in self.enemigos_golpeados:
+
+            self.enemigos_golpeados.append(enemigo)
+        
+    
+    def __str__(self) -> str:
+        return f'vidas del jugador: {self.vida}, enemigos golpeados: {self.enemigos_golpeados}'
+        
+
+# Crear un jugador y un enemigo
+jugador = Jugador(100)
+enemigo1 = Enemigo(50)
+enemigo2 = Enemigo(75)
+
+# Golpear al enemigo
+jugador.golpear(enemigo1, 20)
+print(f"Enemigo 1: {enemigo1.vida}")  # Debería mostrar 30 de vida restante
+
+# El jugador es golpeado
+print(jugador.golpeado(30))  # Vida del jugador ahora será 70
+
+# Mostrar la vida del jugador
+print(jugador)  # Debería mostrar 'Vidas del jugador: 70'
+
